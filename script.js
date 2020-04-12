@@ -1,60 +1,112 @@
-// Assignment Code
-var AmountNumber = document.getElementById('characterAmountNumber')
-
-var includeUppercaseEl = document.getElementById ('includeUppercase')
-var includeLowercaseEl = document.getElementById ('includeLowercase')
-var IncludeSymbolsEl = document.getElementById('IncludeSymbols')
-var includeNumbersEl = document.getElementById('includeNumbers')
-var passwordDisplay = document.getElementById('password-display"')
-var form = document.getElementById('passwordGenerator')
-
-var  LOWERCASE_CODES = arrayLowToHigh(65,90)
-var UPPERCASE_CODES = arrayLowToHigh(97, 122)
-var NUMBER_CODES = arrayLowToHigh(48,57)
-var SYMBOL_CODES = arrayLowToHigh(33,47).concat(arrayLowToHigh(58, 64).concat(arrayLowToHigh (91,96),
-
-
-
-
-form.addEventListener('submit', e => {
-      e.preventDefault()
-      var characterAmount = AmountNumber.nodeValue
-      var includeUppercase = includeUppercaseEl.checked
-      var includeLowercase = includeLowercaseEl.checked
-      var includeNumbers = includeNumbersEl.checked
-      var includeSymbols = includSeymbolsEl.checked
-      var password = generatePassword(characterAmountNumber, includeUppercase, includeNumbers, includeSymbols)
-      passwordDisplay.innerText = password
-
-
-function  generatePassword(characterAmountNumber, includeUppercase, includeNumbers, includeSymbols){
-      var charCodes = LOWERCASE_CODES
-      if(includeLowercase) charCodes = charCodes.concat(UPPERCASE_CODES)
-      if(includeNumbers) charCodes = charCodes.concat(NUMBER_CODES)
-      if(includeSymbols) charCodes = charCodes.concat(SYMBOL_CODES)
-            var passwordCharacter = []
-
-       for(let i = 0; i < characterAmountNumber; i++){
-             var character = charCodes[Math.floor(Math.random() *
-                  characterAmountNumber)]
-             passwordCharacter.push(String.fromCharCode(character))
-
-       }
-       return passwordCharacter.join('')
+// the password length field
+const passwordSize = document.getElementById("characterAmount");
+// the generated password 
+const userPassword = document.getElementById("password-display");
+//random Lowercase checkbox 
+const randomLower = document.getElementById("includeLowercase");
+//random Uppercase checkbox 
+const randomUpper = document.getElementById("includeUppercase");
+//random number checkbox 
+const randomNumber = document.getElementById("includeNumbers");
+//random symbol checkbox
+const randomSymbol = document.getElementById("includeSymbols");
+//results button
+const generateBtn = document.getElementById("generate-button");
 
 
 
 
-function arrayLowToHigh(low, high){
-      var array = []
-      for(let i = low; i <= high; i++){
-            array.push(i)
 
-      }
-      return array
+generateBtn.addEventListener("click", function (event) {
+    event.preventDefault();
+    //checks password length and returns a number
+    const length = +passwordSize.value;
+    //checks lowercase checkbox
+    const hasLower = randomLower.checked;
+    //checks uppercase checkbox
+    const hasUpper = randomUpper.checked;
+    //checks numbers checkbox
+    const hasNumber = randomNumber.checked;
+    //checks symbols checkbox
+    const hasSymbol = randomSymbol.checked;
+
+
+    console.log(typeof length);
+    userPassword.innerText = generatePassword(hasUpper, hasLower, hasNumber, hasSymbol, length);
+
+
+
+});
+
+function generatePassword(upper, lower, number, symbol, length) {
+    let password = '';
+    const typesCount = upper + lower + number + symbol;
+    console.log('typesCount:', typesCount);
+
+    const typesArr = [{
+            upper
+        }, {
+            lower
+        }, {
+            number
+        }, {
+            symbol
+        }]
+        .filter(
+            item => Object.values(item)[0]
+        );
+
+
+    if (typesCount === 0) {
+        return '';
+    }
+    for (let i = 0; i < length; i += typesCount) {
+        typesArr.forEach(type => {
+            const funcName = Object.keys(type)[0];
+
+            password += mainFunct[funcName]();
+
+        });
+
+    }
+    const finalPassword =  password.slice(0,length);
+
+    return finalPassword;
+
+
 }
 
 
+
+const mainFunct = {
+    lower: getRandomLower,
+    upper: getRandomUpper,
+    number: getRandomNumber,
+    symbol: getRandomSymbol
+};
+
+
+function getRandomLower() {
+
+    return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+}
+
+function getRandomUpper() {
+
+    return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+}
+
+function getRandomNumber() {
+
+    return String.fromCharCode(Math.floor(Math.random() * 10) + 48);
+}
+
+function getRandomSymbol() {
+
+
+    let symbols = '!@#$%^&*(){}[]`';
+    return symbols[Math.floor(Math.random() * symbols.length)];
+}
 
 
 // list of alpha characters
